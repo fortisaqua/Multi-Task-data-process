@@ -130,11 +130,18 @@ class Data():
                                     original_block = temp_block
                                     data_group['original'] = temp_block
 
+                                    # extract original image first to see if this block is necessary
+                                    temp_block_l = np.zeros(block_shape, np.int16)
+                                    temp_block_l[:tops[0] - i, :tops[1] - j, :tops[2] - k] += \
+                                        arrays['lung'][i:tops[0], j:tops[1], k:tops[2]]
+                                    lung_block = temp_block_l
+                                    data_group['lung'] = temp_block_l
+
                                     # extract the rest masks if this block is necessary
                                     if not np.max(original_block) == np.min(original_block) == 0 and\
-                                            not np.max(data_group['lung']) == np.min(data_group['lung']) == 0:
+                                            not np.max(lung_block) == np.min(lung_block) == 0:
                                         for name in arrays.keys():
-                                            if not 'origin' in name:
+                                            if not 'origin' in name and not 'lung' in name:
                                                 temp_block = np.zeros(block_shape,np.int16)
                                                 temp_block[:tops[0] - i, :tops[1] - j, :tops[2] - k]+= \
                                                     arrays[name][i:tops[0], j:tops[1], k:tops[2]]

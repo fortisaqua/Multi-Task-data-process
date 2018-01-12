@@ -9,7 +9,6 @@ import config
 
 FLAGS = tf.app.flags.FLAGS
 
-
 record_dir = FLAGS.record_dir
 block_shape = [FLAGS.block_shape_1,FLAGS.block_shape_2,FLAGS.block_shape_3]
 batch_size = FLAGS.batch_size_train

@@ -131,7 +131,8 @@ class Data():
                                     data_group['original'] = temp_block
 
                                     # extract the rest masks if this block is necessary
-                                    if not np.max(original_block) == np.min(original_block) == 0:
+                                    if not np.max(original_block) == np.min(original_block) == 0 and\
+                                            not np.max(data_group['lung']) == np.min(data_group['lung']) == 0:
                                         for name in arrays.keys():
                                             if not 'origin' in name:
                                                 temp_block = np.zeros(block_shape,np.int16)

@@ -6,7 +6,7 @@ tf.app.flags.DEFINE_string(
 )
 
 tf.app.flags.DEFINE_string(
-    'record_dir',"./records_artery/",
+    'record_dir',"./records/",
     'Directory where tfrecord files will be stored'
 )
 
@@ -36,7 +36,7 @@ tf.app.flags.DEFINE_integer(
 )
 
 tf.app.flags.DEFINE_integer(
-    'step_3',24,
+    'step_3',12,
     'step length of number 0 dimension'
 )
 

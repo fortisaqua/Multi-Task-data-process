@@ -148,17 +148,21 @@ class Data():
 
                                     # extract the rest masks if this block is necessary
                                     if not np.max(original_block) == np.min(original_block) == 0:
+                                        flag = False
                                         for name in arrays.keys():
                                             if not 'origin' in name:
                                                 temp_block = np.zeros(block_shape,np.int16)
                                                 temp_block[:tops[0] - i, :tops[1] - j, :tops[2] - k]+= \
                                                     arrays[name][i:tops[0], j:tops[1], k:tops[2]]
                                                 data_group[name] = temp_block
+                                                if not np.max(temp_block)==np.min(temp_block)==0:
+                                                    flag = True
                                                 if np.max(temp_block)>1 or np.min(temp_block)<0:
                                                     print "error occured at %s"%(str([i,j,k]))
-                                        example = self.to_tfrecord(data_group)
-                                        tfrecord_writer.write(example.SerializeToString())
-                                        counter += 1
+                                        if flag:
+                                            example = self.to_tfrecord(data_group)
+                                            tfrecord_writer.write(example.SerializeToString())
+                                            counter += 1
                 print "data set number %04d has %d examples"%(count,counter)
 
 class TF_Records():

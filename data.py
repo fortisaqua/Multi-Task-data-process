@@ -88,11 +88,19 @@ class Data():
             count+=1
 
     def to_tfrecord(self,data_group):
+        '''
+        :param data_group: a data block containing image data , image block location and project name
+        :return: an tfexample to be saved
+
+        data_group['block_loc'] = [i,tops[0],j,tops[1],k,tops[2]](xmin,xmax,ymin,ymax,zmin,zmax)
+        '''
         example = tf.train.Example(features=tf.train.Features(feature={
             'airway' : _bytes_feature(data_group['airway'].tostring()),
             'artery' : _bytes_feature(data_group['artery'].tostring()),
             'lung' : _bytes_feature(data_group['lung'].tostring()),
             'original' : _bytes_feature(data_group['original'].tostring()),
+            'block_loc' : _bytes_feature(data_group['block_loc'].tostring()),
+            'project_name' : _bytes_feature(data_group['project_name'])
             # 'back_ground' : _bytes_feature(data_group['back_ground'].tostring())
         }))
         return example
@@ -129,18 +137,20 @@ class Data():
                                         arrays['original'][i:tops[0], j:tops[1], k:tops[2]]
                                     original_block = temp_block
                                     data_group['original'] = temp_block
-
+                                    data_group['block_loc'] = np.int16([i,tops[0],j,tops[1],k,tops[2]])
+                                    data_group['project_name'] = project_name
                                     # extract original image first to see if this block is necessary
-                                    # temp_block_l = np.zeros(block_shape, np.int16)
-                                    # temp_block_l[:tops[0] - i, :tops[1] - j, :tops[2] - k] += \
-                                    #    arrays['lung'][i:tops[0], j:tops[1], k:tops[2]]
-                                    # lung_block = temp_block_l
-                                    # data_group['lung'] = temp_block_l
+                                    temp_block_l = np.zeros(block_shape, np.int16)
+                                    temp_block_l[:tops[0] - i, :tops[1] - j, :tops[2] - k] += \
+                                       arrays['artery'][i:tops[0], j:tops[1], k:tops[2]]
+                                    artery_block = temp_block_l
+                                    data_group['artery'] = temp_block_l
 
                                     # extract the rest masks if this block is necessary
-                                    if not np.max(original_block) == np.min(original_block) == 0:
+                                    if not np.max(original_block) == np.min(original_block) == 0\
+                                            and not np.max(artery_block) == np.min(artery_block):
                                         for name in arrays.keys():
-                                            if not 'origin' in name:
+                                            if not 'origin' in name and not 'artery' in name:
                                                 temp_block = np.zeros(block_shape,np.int16)
                                                 temp_block[:tops[0] - i, :tops[1] - j, :tops[2] - k]+= \
                                                     arrays[name][i:tops[0], j:tops[1], k:tops[2]]
@@ -174,12 +184,16 @@ class TF_Records():
                 'artery' : tf.FixedLenFeature([],tf.string),
                 'lung' : tf.FixedLenFeature([],tf.string),
                 'original' : tf.FixedLenFeature([],tf.string),
+                'block_loc': tf.FixedLenFeature([],tf.string),
+                'project_name' : tf.FixedLenFeature([],tf.string),
                 # 'back_ground' : tf.FixedLenFeature([],tf.string)
             })
         ret['airway'] = tf.reshape(tf.decode_raw(features['airway'],tf.int16),self.block_shape)
         ret['artery'] = tf.reshape(tf.decode_raw(features['artery'],tf.int16),self.block_shape)
         ret['lung'] = tf.reshape(tf.decode_raw(features['lung'],tf.int16),self.block_shape)
         ret['original'] = tf.reshape(tf.decode_raw(features['original'],tf.int16),self.block_shape)
+        ret['block_loc'] = tf.reshape(tf.decode_raw(features['block_loc'],tf.int16),[6])
+        ret['project_name'] = features['project_name']
         # ret['back_ground'] =tf.reshape(tf.decode_raw(features['back_ground'],tf.uint8),self.block_shape)
 
         return ret

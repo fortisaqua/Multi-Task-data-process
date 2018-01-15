@@ -6,7 +6,7 @@ tf.app.flags.DEFINE_string(
 )
 
 tf.app.flags.DEFINE_string(
-    'record_dir',"./records/",
+    'record_dir',"./records_artery/",
     'Directory where tfrecord files will be stored'
 )
 
@@ -14,13 +14,30 @@ tf.app.flags.DEFINE_integer(
     'block_shape_1',48,
     'shape of single data block'
 )
+
+tf.app.flags.DEFINE_integer(
+    'step_1',12,
+    'step length of number 0 dimension'
+)
+
 tf.app.flags.DEFINE_integer(
     'block_shape_2',48,
     'shape of single data block'
 )
+
+tf.app.flags.DEFINE_integer(
+    'step_2',12,
+    'step length of number 0 dimension'
+)
+
 tf.app.flags.DEFINE_integer(
     'block_shape_3',48,
     'shape of single data block'
+)
+
+tf.app.flags.DEFINE_integer(
+    'step_3',12,
+    'step length of number 0 dimension'
 )
 
 tf.app.flags.DEFINE_integer(

@@ -140,17 +140,16 @@ class Data():
                                     data_group['block_loc'] = np.int16([i,tops[0],j,tops[1],k,tops[2]])
                                     data_group['project_name'] = project_name
                                     # extract original image first to see if this block is necessary
-                                    temp_block_l = np.zeros(block_shape, np.int16)
-                                    temp_block_l[:tops[0] - i, :tops[1] - j, :tops[2] - k] += \
-                                       arrays['artery'][i:tops[0], j:tops[1], k:tops[2]]
-                                    artery_block = temp_block_l
-                                    data_group['artery'] = temp_block_l
+                                    # temp_block_l = np.zeros(block_shape, np.int16)
+                                    # temp_block_l[:tops[0] - i, :tops[1] - j, :tops[2] - k] += \
+                                    #    arrays['artery'][i:tops[0], j:tops[1], k:tops[2]]
+                                    # artery_block = temp_block_l
+                                    # data_group['artery'] = temp_block_l
 
                                     # extract the rest masks if this block is necessary
-                                    if not np.max(original_block) == np.min(original_block) == 0\
-                                            and not np.max(artery_block) == np.min(artery_block):
+                                    if not np.max(original_block) == np.min(original_block) == 0:
                                         for name in arrays.keys():
-                                            if not 'origin' in name and not 'artery' in name:
+                                            if not 'origin' in name:
                                                 temp_block = np.zeros(block_shape,np.int16)
                                                 temp_block[:tops[0] - i, :tops[1] - j, :tops[2] - k]+= \
                                                     arrays[name][i:tops[0], j:tops[1], k:tops[2]]

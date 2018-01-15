@@ -1,13 +1,23 @@
 import tensorflow as tf
 
 tf.app.flags.DEFINE_string(
-    'dicom_root',"/opt/multi_task_data/",
-    'Directory where original dicom files stored'
+    'dicom_root',"/opt/multi_task_data_train/",
+    'Directory where original dicom files for training stored'
+)
+
+tf.app.flags.DEFINE_string(
+    'dicom_test_root',"/opt/multi_task_data_test/",
+    'Directory where original dicom files for testing stored'
 )
 
 tf.app.flags.DEFINE_string(
     'record_dir',"./records/",
     'Directory where tfrecord files will be stored'
+)
+
+tf.app.flags.DEFINE_string(
+    'record_test_dir','/opt/Multi-Task-data-process/records_test/',
+    'Directory where test data stored'
 )
 
 tf.app.flags.DEFINE_integer(
@@ -16,7 +26,7 @@ tf.app.flags.DEFINE_integer(
 )
 
 tf.app.flags.DEFINE_integer(
-    'step_1',12,
+    'step_1',24,
     'step length of number 0 dimension'
 )
 
@@ -26,7 +36,7 @@ tf.app.flags.DEFINE_integer(
 )
 
 tf.app.flags.DEFINE_integer(
-    'step_2',12,
+    'step_2',24,
     'step length of number 0 dimension'
 )
 
@@ -36,7 +46,7 @@ tf.app.flags.DEFINE_integer(
 )
 
 tf.app.flags.DEFINE_integer(
-    'step_3',12,
+    'step_3',24,
     'step length of number 0 dimension'
 )
 

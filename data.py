@@ -53,7 +53,7 @@ class Data():
         except Exception,e:
             self.single_data = Data_dict(meta)
 
-    def process_data_single(self,block_shape):
+    def process_data_single(self,block_shape,extract_mode):
         count = self.saved_number
         for meta in self.data_meta:
             self.get_single_meta(meta)
@@ -84,7 +84,10 @@ class Data():
             #     continue
             print "background mask checked!!"
             print "convert data %s into record!"%(meta["project_name"])
-            self.convert_to_record(block_shape,meta,count)
+            if 'train' in extract_mode:
+                self.convert_to_record_train(block_shape,meta,count)
+            if 'test' in extract_mode:
+                self.convert_to_record_test(block_shape,meta,count)
             count+=1
 
     def to_tfrecord(self,data_group):
@@ -105,7 +108,7 @@ class Data():
         }))
         return example
 
-    def convert_to_record(self,block_shape,meta,count):
+    def convert_to_record_train(self,block_shape,meta,count):
         project_name = meta["project_name"]
         arrays={}
         for name in self.single_data.data_dict.keys():
@@ -157,6 +160,66 @@ class Data():
                                                 data_group[name] = temp_block
                                                 if not np.max(temp_block)==np.min(temp_block)==0:
                                                     flag = True
+                                                if np.max(temp_block)>1 or np.min(temp_block)<0:
+                                                    print "error occured at %s"%(str([i,j,k]))
+                                        if flag:
+                                            example = self.to_tfrecord(data_group)
+                                            tfrecord_writer.write(example.SerializeToString())
+                                            counter += 1
+                print "data set number %04d has %d examples"%(count,counter)
+
+    def convert_to_record_test(self,block_shape,meta,count):
+        project_name = meta["project_name"]
+        arrays={}
+        for name in self.single_data.data_dict.keys():
+            if not "name" in name:
+                arrays[name] = self.single_data.data_dict[name]
+        data_shape = np.shape(self.single_data.data_dict['original'])
+        with tf.Graph().as_default(), tf.device('/gpu:0'):
+            with tf.Session('') as sess:
+                record_file_name = self.record_dir+'data_set_%04d_%s.tfrecord'%(count,project_name)
+                options = tf.python_io.TFRecordOptions(TFRecordCompressionType.ZLIB)
+                with tf.python_io.TFRecordWriter(record_file_name,options=options) as tfrecord_writer:
+                    counter = 0
+                    for i in range(0,data_shape[0],block_shape[0]/2):
+                        for j in range(0,data_shape[1],block_shape[1]/2):
+                            for k in range(0,data_shape[2],block_shape[2]/2):
+                                if i+block_shape[0]/2<data_shape[0] and \
+                                        j+block_shape[1]/2<data_shape[1] and k+block_shape[2]/2<data_shape[2]:
+                                    data_group = {}
+
+                                    # make sure that blocks extracted will be in the fixed shape by padding zeros
+                                    tops = [i + block_shape[0], j + block_shape[1], k + block_shape[2]]
+                                    for n in range(len(tops)):
+                                        if tops[n] > data_shape[n]:
+                                            tops[n] = data_shape[n]
+
+                                    # extract original image first to see if this block is necessary
+                                    temp_block = np.zeros(block_shape, np.int16)
+                                    temp_block[:tops[0] - i, :tops[1] - j, :tops[2] - k] += \
+                                        arrays['original'][i:tops[0], j:tops[1], k:tops[2]]
+                                    original_block = temp_block
+                                    data_group['original'] = temp_block
+                                    data_group['block_loc'] = np.int16([i,tops[0],j,tops[1],k,tops[2]])
+                                    data_group['project_name'] = project_name
+                                    # extract original image first to see if this block is necessary
+                                    # temp_block_l = np.zeros(block_shape, np.int16)
+                                    # temp_block_l[:tops[0] - i, :tops[1] - j, :tops[2] - k] += \
+                                    #    arrays['artery'][i:tops[0], j:tops[1], k:tops[2]]
+                                    # artery_block = temp_block_l
+                                    # data_group['artery'] = temp_block_l
+
+                                    # extract the rest masks if this block is necessary
+                                    if not np.max(original_block) == np.min(original_block) == 0:
+                                        flag = True
+                                        for name in arrays.keys():
+                                            if not 'origin' in name:
+                                                temp_block = np.zeros(block_shape,np.int16)
+                                                temp_block[:tops[0] - i, :tops[1] - j, :tops[2] - k]+= \
+                                                    arrays[name][i:tops[0], j:tops[1], k:tops[2]]
+                                                data_group[name] = temp_block
+                                                if np.max(temp_block)==np.min(temp_block)==0:
+                                                    flag = False
                                                 if np.max(temp_block)>1 or np.min(temp_block)<0:
                                                     print "error occured at %s"%(str([i,j,k]))
                                         if flag:

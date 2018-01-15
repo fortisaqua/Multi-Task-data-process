@@ -9,7 +9,7 @@ import config
 
 FLAGS = tf.app.flags.FLAGS
 
-record_dir = FLAGS.record_dir
+record_dir = FLAGS.record_test_dir
 block_shape = [FLAGS.block_shape_1,FLAGS.block_shape_2,FLAGS.block_shape_3]
 batch_size = FLAGS.batch_size_train
 
@@ -59,7 +59,7 @@ with tf.Graph().as_default():
     tf.train.start_queue_runners(sess=sess)
     try:
         error_count =0
-        for i in range(2000):
+        for i in range(200):
             # organize a batch of data for training
             airway_np = np.zeros([2,block_shape[0],block_shape[1],block_shape[2]],np.int16)
             artery_np = np.zeros([2,block_shape[0],block_shape[1],block_shape[2]],np.int16)

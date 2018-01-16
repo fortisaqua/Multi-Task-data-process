@@ -20,12 +20,12 @@ if __name__=="__main__":
     # training data
     # =========================================
     # '''
-    # origin_meta = ut.organizie_keys(dicom_root)
-    # data_meta = ut.split_metas(origin_meta)
-    # data = Data(data_meta,record_dir)
-    # data.process_data_single(block_shape,'train')
-    # del data
-    # gc.collect()
+    origin_meta = ut.organizie_keys(dicom_root)
+    data_meta = ut.split_metas(origin_meta)
+    data = Data(data_meta,record_dir)
+    data.process_data_single(block_shape,'train')
+    del data
+    gc.collect()
 
     print '''=========================================
         testing data

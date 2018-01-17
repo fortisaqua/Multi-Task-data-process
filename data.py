@@ -55,6 +55,7 @@ class Data():
 
     def process_data_single(self,block_shape,extract_mode):
         count = self.saved_number
+        block_counter = 0
         for meta in self.data_meta:
             self.get_single_meta(meta)
 
@@ -85,10 +86,11 @@ class Data():
             print "background mask checked!!"
             print "convert data %s into record!"%(meta["project_name"])
             if 'train' in extract_mode:
-                self.convert_to_record_train(block_shape,meta,count)
+                block_counter += self.convert_to_record_train(block_shape,meta,count)
             if 'test' in extract_mode:
                 self.convert_to_record_test(block_shape,meta,count)
             count+=1
+            print "total block count : ",block_counter
 
     def to_tfrecord(self,data_group):
         '''
@@ -167,6 +169,7 @@ class Data():
                                             tfrecord_writer.write(example.SerializeToString())
                                             counter += 1
                 print "data set number %04d has %d examples"%(count,counter)
+                return counter
 
     def convert_to_record_test(self,block_shape,meta,count):
         project_name = meta["project_name"]

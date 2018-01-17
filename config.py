@@ -1,12 +1,12 @@
 import tensorflow as tf
 
 tf.app.flags.DEFINE_string(
-    'dicom_root',"/opt/multi_task_data_train/",
+    'dicom_root',"./multi_task_data_train/",
     'Directory where original dicom files for training stored'
 )
 
 tf.app.flags.DEFINE_string(
-    'dicom_test_root',"/opt/multi_task_data_test/",
+    'dicom_test_root',"./multi_task_data_test/",
     'Directory where original dicom files for testing stored'
 )
 

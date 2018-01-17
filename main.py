@@ -16,7 +16,7 @@ if __name__=="__main__":
     record_dir_test = FLAGS.record_test_dir
     block_shape = [FLAGS.block_shape_1,FLAGS.block_shape_2,FLAGS.block_shape_3]
 
-    # print '''=========================================
+    print '''=========================================
     # training data
     # =========================================
     # '''

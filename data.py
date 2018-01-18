@@ -90,7 +90,7 @@ class Data():
             if 'test' in extract_mode:
                 self.convert_to_record_test(block_shape,meta,count)
             count+=1
-            print "total block count : ",block_counter
+        print "total block count : ",block_counter
 
     def to_tfrecord(self,data_group):
         '''
@@ -160,8 +160,11 @@ class Data():
                                                 temp_block[:tops[0] - i, :tops[1] - j, :tops[2] - k]+= \
                                                     arrays[name][i:tops[0], j:tops[1], k:tops[2]]
                                                 data_group[name] = temp_block
-                                                if not np.max(temp_block)==np.min(temp_block)==0:
+                                                if np.float32(np.sum(temp_block)) / (
+                                                        (tops[0] - i) * (tops[1] - j) * (tops[2] - k)) > 0.01:
                                                     flag = True
+                                                # if not np.max(temp_block)==np.min(temp_block)==0:
+                                                #     flag = True
                                                 if np.max(temp_block)>1 or np.min(temp_block)<0:
                                                     print "error occured at %s"%(str([i,j,k]))
                                         if flag:

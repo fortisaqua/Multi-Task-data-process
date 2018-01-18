@@ -113,6 +113,7 @@ class Data():
     def convert_to_record_train(self,block_shape,meta,count):
         project_name = meta["project_name"]
         arrays={}
+        counter = 0
         for name in self.single_data.data_dict.keys():
             if not "name" in name:
                 arrays[name] = self.single_data.data_dict[name]
@@ -122,7 +123,6 @@ class Data():
                 record_file_name = self.record_dir+'data_set_%04d_%s.tfrecord'%(count,project_name)
                 options = tf.python_io.TFRecordOptions(TFRecordCompressionType.ZLIB)
                 with tf.python_io.TFRecordWriter(record_file_name,options=options) as tfrecord_writer:
-                    counter = 0
                     for i in range(0,data_shape[0],block_shape[0]/2):
                         for j in range(0,data_shape[1],block_shape[1]/2):
                             for k in range(0,data_shape[2],block_shape[2]/2):
@@ -168,12 +168,13 @@ class Data():
                                             example = self.to_tfrecord(data_group)
                                             tfrecord_writer.write(example.SerializeToString())
                                             counter += 1
-                print "data set number %04d has %d examples"%(count,counter)
-                return counter
+        print "data set number %04d has %d examples"%(count,counter)
+        return counter
 
     def convert_to_record_test(self,block_shape,meta,count):
         project_name = meta["project_name"]
         arrays={}
+        counter = 0
         for name in self.single_data.data_dict.keys():
             if not "name" in name:
                 arrays[name] = self.single_data.data_dict[name]
@@ -183,7 +184,6 @@ class Data():
                 record_file_name = self.record_dir+'data_set_%04d_%s.tfrecord'%(count,project_name)
                 options = tf.python_io.TFRecordOptions(TFRecordCompressionType.ZLIB)
                 with tf.python_io.TFRecordWriter(record_file_name,options=options) as tfrecord_writer:
-                    counter = 0
                     for i in range(0,data_shape[0],block_shape[0]/2):
                         for j in range(0,data_shape[1],block_shape[1]/2):
                             for k in range(0,data_shape[2],block_shape[2]/2):
@@ -232,7 +232,7 @@ class Data():
                                             example = self.to_tfrecord(data_group)
                                             tfrecord_writer.write(example.SerializeToString())
                                             counter += 1
-                print "data set number %04d has %d examples"%(count,counter)
+        print "data set number %04d has %d examples"%(count,counter)
 
 class TF_Records():
     def __init__(self,records,block_shape):

@@ -59,7 +59,7 @@ with tf.Graph().as_default():
     tf.train.start_queue_runners(sess=sess)
     try:
         error_count =0
-        for i in range(200):
+        for i in range(50000):
             # organize a batch of data for training
             airway_np = np.zeros([2,block_shape[0],block_shape[1],block_shape[2]],np.int16)
             artery_np = np.zeros([2,block_shape[0],block_shape[1],block_shape[2]],np.int16)
@@ -77,7 +77,7 @@ with tf.Graph().as_default():
 
             if np.max(airway_np)>1 or np.max(artery_np)>1 or np.max(lung_np)>1:
                 error_count+=1
-            if i % 50 == 0:
+            if i % 200 == 0:
                 print("%d data shape :%s "%(i,str(np.shape(original_np))))
                 airway_sum = np.sum(np.float32(airway_np))
                 artery_sum = np.sum(np.float32(artery_np))

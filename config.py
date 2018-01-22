@@ -11,12 +11,12 @@ tf.app.flags.DEFINE_string(
 )
 
 tf.app.flags.DEFINE_string(
-    'record_dir',"./records/",
+    'record_dir',"./records_48/",
     'Directory where tfrecord files will be stored'
 )
 
 tf.app.flags.DEFINE_string(
-    'record_test_dir','/opt/Multi-Task-data-process/records_test/',
+    'record_test_dir','./records_test_48/',
     'Directory where test data stored'
 )
 
@@ -26,7 +26,7 @@ tf.app.flags.DEFINE_integer(
 )
 
 tf.app.flags.DEFINE_integer(
-    'step_1',12,
+    'step_1',4,
     'step length of number 0 dimension'
 )
 
@@ -36,7 +36,7 @@ tf.app.flags.DEFINE_integer(
 )
 
 tf.app.flags.DEFINE_integer(
-    'step_2',12,
+    'step_2',4,
     'step length of number 0 dimension'
 )
 
@@ -46,7 +46,7 @@ tf.app.flags.DEFINE_integer(
 )
 
 tf.app.flags.DEFINE_integer(
-    'step_3',12,
+    'step_3',4,
     'step length of number 0 dimension'
 )
 

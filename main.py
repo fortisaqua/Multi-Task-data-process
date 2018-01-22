@@ -16,16 +16,16 @@ if __name__=="__main__":
     record_dir_test = FLAGS.record_test_dir
     block_shape = [FLAGS.block_shape_1,FLAGS.block_shape_2,FLAGS.block_shape_3]
 
-    print '''=========================================
-    training data
-    =========================================
-    '''
-    origin_meta = ut.organizie_keys(dicom_root)
-    data_meta = ut.split_metas(origin_meta)
-    data = Data(data_meta,record_dir)
-    data.process_data_single(block_shape,'train')
-    del data
-    gc.collect()
+    # print '''=========================================
+    # training data
+    # =========================================
+    # '''
+    # origin_meta = ut.organizie_keys(dicom_root)
+    # data_meta = ut.split_metas(origin_meta)
+    # data = Data(data_meta,record_dir)
+    # data.process_data_single(block_shape,'train')
+    # del data
+    # gc.collect()
 
     print '''=========================================
         testing data

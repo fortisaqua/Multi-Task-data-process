@@ -185,8 +185,8 @@ class Data():
                 arrays[name] = self.single_data.data_dict[name]
             if "lung" in name:
                 arrays[name] = np.int16((self.single_data.data_dict[name]+self.single_data.data_dict["artery"]) > 0)
-            lung_img = ST.GetImageFromArray(np.transpose(arrays[name], [2, 1, 0]))
-            ST.WriteImage(lung_img, './' + name + '.vtk')
+            # lung_img = ST.GetImageFromArray(np.transpose(arrays[name], [2, 1, 0]))
+            # ST.WriteImage(lung_img, './' + name + '.vtk')
         data_shape = np.shape(self.single_data.data_dict['original'])
         with tf.Graph().as_default(), tf.device('/gpu:0'):
             with tf.Session('') as sess:

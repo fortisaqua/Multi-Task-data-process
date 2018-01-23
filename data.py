@@ -56,6 +56,7 @@ class Data():
     def process_data_single(self,block_shape,extract_mode):
         count = self.saved_number
         block_counter = 0
+        accept_zeros_count = 0
         for meta in self.data_meta:
             self.get_single_meta(meta)
 
@@ -86,7 +87,11 @@ class Data():
             print "background mask checked!!"
             print "convert data %s into record!"%(meta["project_name"])
             if 'train' in extract_mode:
-                block_counter += self.convert_to_record_train(block_shape,meta,count)
+                if accept_zeros_count<5:
+                    block_counter += self.convert_to_record_train(block_shape,meta,count,True)
+                    accept_zeros_count+=1
+                else:
+                    block_counter += self.convert_to_record_train(block_shape,meta,count,False)
             if 'test' in extract_mode:
                 self.convert_to_record_test(block_shape,meta,count)
             count+=1
@@ -110,7 +115,7 @@ class Data():
         }))
         return example
 
-    def convert_to_record_train(self,block_shape,meta,count):
+    def convert_to_record_train(self,block_shape,meta,count,accept_zeros):
         project_name = meta["project_name"]
         arrays={}
         counter = 0
@@ -155,24 +160,39 @@ class Data():
 
                                     # extract the rest masks if this block is necessary
                                     if not np.max(original_block) == np.min(original_block) == 0:
-                                        flag = False
-                                        for name in arrays.keys():
-                                            if not 'origin' in name:
-                                                temp_block = np.zeros(block_shape,np.int16)
-                                                temp_block[:tops[0] - i, :tops[1] - j, :tops[2] - k]+= \
-                                                    arrays[name][i:tops[0], j:tops[1], k:tops[2]]
-                                                data_group[name] = temp_block
-                                                if np.float32(np.sum(temp_block)) / (
-                                                        (tops[0] - i) * (tops[1] - j) * (tops[2] - k)) > 0.01:
-                                                    flag = True
-                                                # if not np.max(temp_block)==np.min(temp_block)==0:
-                                                #     flag = True
-                                                if np.max(temp_block)>1 or np.min(temp_block)<0:
-                                                    print "error occured at %s"%(str([i,j,k]))
-                                        if flag:
+                                        if accept_zeros:
+                                            for name in arrays.keys():
+                                                if not 'origin' in name:
+                                                    temp_block = np.zeros(block_shape,np.int16)
+                                                    temp_block[:tops[0] - i, :tops[1] - j, :tops[2] - k]+= \
+                                                        arrays[name][i:tops[0], j:tops[1], k:tops[2]]
+                                                    data_group[name] = temp_block
+                                                    # if not np.max(temp_block)==np.min(temp_block)==0:
+                                                    #     flag = True
+                                                    if np.max(temp_block)>1 or np.min(temp_block)<0:
+                                                        print "error occured at %s"%(str([i,j,k]))
                                             example = self.to_tfrecord(data_group)
                                             tfrecord_writer.write(example.SerializeToString())
                                             counter += 1
+                                        else:
+                                            flag = False
+                                            for name in arrays.keys():
+                                                if not 'origin' in name:
+                                                    temp_block = np.zeros(block_shape,np.int16)
+                                                    temp_block[:tops[0] - i, :tops[1] - j, :tops[2] - k]+= \
+                                                        arrays[name][i:tops[0], j:tops[1], k:tops[2]]
+                                                    data_group[name] = temp_block
+                                                    if np.float32(np.sum(temp_block)) / (
+                                                            (tops[0] - i) * (tops[1] - j) * (tops[2] - k)) > 0.01:
+                                                        flag = True
+                                                    # if not np.max(temp_block)==np.min(temp_block)==0:
+                                                    #     flag = True
+                                                    if np.max(temp_block)>1 or np.min(temp_block)<0:
+                                                        print "error occured at %s"%(str([i,j,k]))
+                                            if flag:
+                                                example = self.to_tfrecord(data_group)
+                                                tfrecord_writer.write(example.SerializeToString())
+                                                counter += 1
         print "data set number %04d has %d examples"%(count,counter)
         return counter
 

@@ -26,7 +26,7 @@ tf.app.flags.DEFINE_integer(
 )
 
 tf.app.flags.DEFINE_integer(
-    'step_1',4,
+    'step_1',48,
     'step length of number 0 dimension'
 )
 
@@ -36,7 +36,7 @@ tf.app.flags.DEFINE_integer(
 )
 
 tf.app.flags.DEFINE_integer(
-    'step_2',4,
+    'step_2',48,
     'step length of number 0 dimension'
 )
 
@@ -46,7 +46,7 @@ tf.app.flags.DEFINE_integer(
 )
 
 tf.app.flags.DEFINE_integer(
-    'step_3',4,
+    'step_3',24,
     'step length of number 0 dimension'
 )
 

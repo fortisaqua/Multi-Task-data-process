@@ -1,7 +1,7 @@
 import tensorflow as tf
 
 tf.app.flags.DEFINE_string(
-    'dicom_root',"./multi_task_data_train/",
+    'dicom_root',"/opt/Multi-Task-data-process/multi_task_data_train/",
     'Directory where original dicom files for training stored'
 )
 
@@ -41,12 +41,12 @@ tf.app.flags.DEFINE_integer(
 )
 
 tf.app.flags.DEFINE_integer(
-    'block_shape_3',64,
+    'block_shape_3',128,
     'shape of single data block'
 )
 
 tf.app.flags.DEFINE_integer(
-    'step_3',32,
+    'step_3',64,
     'step length of number 0 dimension'
 )
 

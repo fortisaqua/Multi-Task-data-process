@@ -6,6 +6,7 @@ import numpy as np
 import util as ut
 from data import TF_Records
 import config
+import SimpleITK as ST
 
 FLAGS = tf.app.flags.FLAGS
 
@@ -59,6 +60,7 @@ with tf.Graph().as_default():
     tf.train.start_queue_runners(sess=sess)
     try:
         error_count =0
+        output_count = 0
         for i in range(50000):
             # organize a batch of data for training
             airway_np = np.zeros([2,block_shape[0],block_shape[1],block_shape[2]],np.int16)
@@ -74,7 +76,17 @@ with tf.Graph().as_default():
                 artery_np[m,:,:,:]+=artery_data
                 lung_np[m,:,:,:]+=lung_data
                 original_np[m,:,:,:]+=original_data
-
+                if output_count<10 and np.sum(np.float32(artery_data))/(block_shape[0]*block_shape[1]*block_shape[2])>0.05:
+                    artery_part = ST.GetImageFromArray(artery_data)
+                    original_part = ST.GetImageFromArray(original_data)
+                    if not os.path.exists('./output/'+output_count):
+                        os.makedirs('./output/'+output_count)
+                    ST.WriteImage(artery_part,'./output/'+output_count+'/artery.vtk')
+                    ST.WriteImage(original_part,'./output/'+output_count+'/original.vtk')
+                    output_count+=1
+                    print output_count
+                else:
+                    exit()
             if np.max(airway_np)>1 or np.max(artery_np)>1 or np.max(lung_np)>1:
                 error_count+=1
             if i % 200 == 0:

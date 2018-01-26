@@ -87,9 +87,10 @@ class Data():
             print "background mask checked!!"
             print "convert data %s into record!"%(meta["project_name"])
             if 'train' in extract_mode:
-                if accept_zeros_count<6:
+                if accept_zeros_count<8:
                     block_counter += self.convert_to_record_train(block_shape,meta,count,True)
                     accept_zeros_count+=1
+                    print accept_zeros_count,'   ',meta["project_name"]
                 else:
                     block_counter += self.convert_to_record_train(block_shape,meta,count,False)
             if 'test' in extract_mode:

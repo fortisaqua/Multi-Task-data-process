@@ -93,7 +93,7 @@ with tf.Graph().as_default():
                     exit()
             if np.max(airway_np)>1 or np.max(artery_np)>1 or np.max(lung_np)>1:
                 error_count+=1
-            if i % 200 == 0:
+            if i % 5 == 0:
                 print("%d data shape :%s "%(i,str(np.shape(original_np))))
                 airway_sum = np.sum(np.float32(airway_np))
                 artery_sum = np.sum(np.float32(artery_np))

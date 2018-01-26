@@ -9,6 +9,9 @@ import config
 import SimpleITK as ST
 
 FLAGS = tf.app.flags.FLAGS
+os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+
 
 record_dir = FLAGS.record_test_dir
 block_shape = [FLAGS.block_shape_1,FLAGS.block_shape_2,FLAGS.block_shape_3]

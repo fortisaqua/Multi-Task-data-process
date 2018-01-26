@@ -254,7 +254,7 @@ class Data():
                                                 if np.max(temp_block)==np.min(temp_block)==0:
                                                     flag = False
                                                 if 'airway' in name:
-                                                    if np.float32(np.sum(temp_block))/((tops[0] - i)*(tops[1] - j)*(tops[2] - k))<0.05:
+                                                    if np.float32(np.sum(temp_block))/((tops[0] - i)*(tops[1] - j)*(tops[2] - k))<0.01:
                                                         flag = False
                                                 if np.max(temp_block)>1 or np.min(temp_block)<0:
                                                     print "error occured at %s"%(str([i,j,k]))

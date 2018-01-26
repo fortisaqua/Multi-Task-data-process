@@ -82,10 +82,11 @@ with tf.Graph().as_default():
                 if output_count<10 and np.sum(np.float32(artery_data))/(block_shape[0]*block_shape[1]*block_shape[2])>0.05:
                     artery_part = ST.GetImageFromArray(artery_data)
                     original_part = ST.GetImageFromArray(original_data)
-                    if not os.path.exists('./output/'+output_count):
-                        os.makedirs('./output/'+output_count)
-                    ST.WriteImage(artery_part,'./output/'+output_count+'/artery.vtk')
-                    ST.WriteImage(original_part,'./output/'+output_count+'/original.vtk')
+                    output_root_temp = './output/'+str(output_count)
+                    if not os.path.exists(output_root_temp):
+                        os.makedirs(output_root_temp)
+                    ST.WriteImage(artery_part,output_root_temp+'/artery.vtk')
+                    ST.WriteImage(original_part,output_root_temp+'/original.vtk')
                     output_count+=1
                     print output_count
                 else:

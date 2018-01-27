@@ -79,6 +79,7 @@ with tf.Graph().as_default():
                 artery_np[m,:,:,:]+=artery_data
                 lung_np[m,:,:,:]+=lung_data
                 original_np[m,:,:,:]+=original_data
+                print project_name
                 if output_count<10 and np.sum(np.float32(artery_data))/(block_shape[0]*block_shape[1]*block_shape[2])>0.05:
                     artery_part = ST.GetImageFromArray(artery_data)
                     original_part = ST.GetImageFromArray(original_data)

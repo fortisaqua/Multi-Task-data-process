@@ -26,7 +26,7 @@ tf.app.flags.DEFINE_integer(
 )
 
 tf.app.flags.DEFINE_integer(
-    'step_1',64,
+    'step_1',48,
     'step length of number 0 dimension'
 )
 
@@ -36,17 +36,17 @@ tf.app.flags.DEFINE_integer(
 )
 
 tf.app.flags.DEFINE_integer(
-    'step_2',64,
+    'step_2',48,
     'step length of number 0 dimension'
 )
 
 tf.app.flags.DEFINE_integer(
-    'block_shape_3',128,
+    'block_shape_3',64,
     'shape of single data block'
 )
 
 tf.app.flags.DEFINE_integer(
-    'step_3',64,
+    'step_3',48,
     'step length of number 0 dimension'
 )
 

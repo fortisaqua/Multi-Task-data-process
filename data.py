@@ -87,12 +87,12 @@ class Data():
             print "background mask checked!!"
             print "convert data %s into record!"%(meta["project_name"])
             if 'train' in extract_mode:
-                if accept_zeros_count<8:
+                if accept_zeros_count<9:
                     block_counter += self.convert_to_record_train(block_shape,meta,count,True)
                     accept_zeros_count+=1
                     print accept_zeros_count,'   ',meta["project_name"]
                 else:
-                    block_counter += self.convert_to_record_train(block_shape,meta,count,False)
+                    block_counter += self.convert_to_record_train(block_shape,meta,count,True)
             if 'test' in extract_mode:
                 self.convert_to_record_test(block_shape,meta,count)
             count+=1
@@ -299,3 +299,4 @@ class TF_Records():
         # ret['back_ground'] =tf.reshape(tf.decode_raw(features['back_ground'],tf.uint8),self.block_shape)
 
         return ret
+v

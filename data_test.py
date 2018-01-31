@@ -64,23 +64,25 @@ with tf.Graph().as_default():
     try:
         error_count =0
         output_count = 0
-        for i in range(50000):
+        for i in range(500):
             # organize a batch of data for training
-            airway_np = np.zeros([2,block_shape[0],block_shape[1],block_shape[2]],np.int16)
-            artery_np = np.zeros([2,block_shape[0],block_shape[1],block_shape[2]],np.int16)
-            lung_np = np.zeros([2,block_shape[0],block_shape[1],block_shape[2]],np.int16)
-            original_np = np.zeros([2,block_shape[0],block_shape[1],block_shape[2]],np.int16)
+            airway_np = np.zeros([block_shape[0],block_shape[1],block_shape[2]],np.int16)
+            artery_np = np.zeros([block_shape[0],block_shape[1],block_shape[2]],np.int16)
+            lung_np = np.zeros([block_shape[0],block_shape[1],block_shape[2]],np.int16)
+            original_np = np.zeros([block_shape[0],block_shape[1],block_shape[2]],np.int16)
 
             # store values into data block
-            for m in range(2):
-                airway_data,artery_data,lung_data,original_data,block_location,project_name = \
-                sess.run([airway_block,artery_block,lung_block,original_block,block_loc,pro_name])
-                airway_np[m,:,:,:]+=airway_data
-                artery_np[m,:,:,:]+=artery_data
-                lung_np[m,:,:,:]+=lung_data
-                original_np[m,:,:,:]+=original_data
-                print project_name
-                if output_count<10 and np.sum(np.float32(artery_data))/(block_shape[0]*block_shape[1]*block_shape[2])>0.05:
+            airway_data,artery_data,lung_data,original_data,block_location,project_name = \
+            sess.run([airway_block,artery_block,lung_block,original_block,block_loc,pro_name])
+            airway_np[:,:,:]+=airway_data
+            artery_np[:,:,:]+=artery_data
+            lung_np[:,:,:]+=lung_data
+            original_np[:,:,:]+=original_data
+            print project_name
+            if output_count<10:
+                percentage = 1.0*np.sum(artery_data)/(block_shape[0]*block_shape[1]*block_shape[2])
+                print percentage
+                if percentage>0.1:
                     artery_part = ST.GetImageFromArray(artery_data)
                     original_part = ST.GetImageFromArray(original_data)
                     output_root_temp = './output/'+str(output_count)
@@ -90,8 +92,6 @@ with tf.Graph().as_default():
                     ST.WriteImage(original_part,output_root_temp+'/original.vtk')
                     output_count+=1
                     print output_count
-                else:
-                    exit()
             if np.max(airway_np)>1 or np.max(artery_np)>1 or np.max(lung_np)>1:
                 error_count+=1
             if i % 5 == 0:
